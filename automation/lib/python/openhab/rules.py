@@ -34,3 +34,22 @@ def rule(clazz):
 
 def addRule(rule):
     get_automation_manager().addRule(rule)
+
+@rule
+class BaseRule:
+
+    def __init__(self):
+        self.log = None
+        self.events = None
+
+    def sendCommand(self, item, *args):
+        if (isinstance(item, str)):
+            item = scope.itemRegistry.get(item)
+        
+        self.events.sendCommand(item, *args)
+
+    def postUpdate(self, item, *args):
+        if (isinstance(item, str)):
+            item = scope.itemRegistry.get(item)
+        
+        self.events.postUpdate(item, *args)
