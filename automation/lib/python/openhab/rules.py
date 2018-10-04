@@ -35,21 +35,35 @@ def rule(clazz):
 def addRule(rule):
     get_automation_manager().addRule(rule)
 
-@rule
-class BaseRule:
+class BaseRule(scope.SimpleRule):
 
     def __init__(self):
-        self.log = None
-        self.events = None
+        self.log = logging.getLogger(LOG_PREFIX + "." + type(self).__module__ + "." + type(self).__name__)
+        self.events = scope.events
+        self.triggers = []
+        self.description = type(self).__doc__ if type(self).__doc__ else None
+
+        set_uid_prefix(self)
+        super(scope.SimpleRule, self)
+
+        self.execute = self.run#log_traceback(self.run)
+        self.triggers = log_traceback(self.getEventTriggers)()
+        addRule(self)
 
     def sendCommand(self, item, *args):
         if (isinstance(item, str)):
             item = scope.itemRegistry.get(item)
         
-        self.events.sendCommand(item, *args)
+        self.events.sendCommand(item, args)
 
     def postUpdate(self, item, *args):
         if (isinstance(item, str)):
             item = scope.itemRegistry.get(item)
         
-        self.events.postUpdate(item, *args)
+        self.events.postUpdate(item, args)
+
+    def run(self, module, inputs):
+        self.log.error("No run(self, module, inputs) defined for " + type(self).__name__)
+    
+    def getEventTriggers(self, module, inputs):
+        self.log.error("No getEventTriggers(self) defined for " + type(self).__name__)
