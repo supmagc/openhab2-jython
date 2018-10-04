@@ -17,7 +17,8 @@ def rule(clazz):
     def init(self, *args, **kwargs):
         scope.SimpleRule.__init__(self)
         set_uid_prefix(self)
-        self.log = logging.getLogger(LOG_PREFIX + "." + clazz.__name__)
+        self.log = logging.getLogger(LOG_PREFIX + "." + clazz.__module__ + "." + clazz.__name__)
+        self.events = scope.events
         clazz.__init__(self, *args, **kwargs)
         if self.description is None and clazz.__doc__:
             self.description = clazz.__doc__
@@ -26,6 +27,7 @@ def rule(clazz):
         elif hasattr(self, "getEventTrigger"):
             # For OH1 compatibility
             self.triggers = log_traceback(self.getEventTrigger)()
+        addRule(self)
     subclass = type(clazz.__name__, (clazz, scope.SimpleRule), dict(__init__=init))
     subclass.execute = log_traceback(clazz.execute)
     return subclass
