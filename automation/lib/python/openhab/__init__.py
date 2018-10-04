@@ -1,4 +1,5 @@
-from openhab.jsr223.scope import items
+from openhab.jsr223.scope import items, events, itemRegistry, things as thingRegistry, rules as ruleRegistry
+from org.eclipse.smarthome.core.library.types import OnOffType, IncreaseDecreaseType, OpenClosedType, StopMoveType, RewindFastforwardType, NextPreviousType, PlayPauseType, UpDownType
 
 #
 # Add an attribute-resolver to the items map
